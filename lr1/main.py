@@ -39,6 +39,10 @@ class Entry(QtWidgets.QMainWindow, entry.Ui_MainWindow, CreateDB):
         self.twoWindow = None
         self.okButton.clicked.connect(self.check)
         self.username = 'ADMIN'
+        self.login_attempt = {
+            'username': None,
+            'count': 0
+        }
         self.extra_password = False
 
     def check(self):
@@ -46,7 +50,7 @@ class Entry(QtWidgets.QMainWindow, entry.Ui_MainWindow, CreateDB):
         password = self.passwordEdit.text()
         if not password:
             self.db_cursor.execute(f"""
-            select username, password, is_confirm, block, extra_password from users
+            select username, password, is_confirm, block, extra_password, is_superuser from users
             where username = '{username}'
             """)
             result = self.db_cursor.fetchone()
@@ -71,13 +75,27 @@ class Entry(QtWidgets.QMainWindow, entry.Ui_MainWindow, CreateDB):
                 self.errorPasswordLabel.setText("К сожалению, вы не администратор")
         else:
             self.db_cursor.execute(f"""
+            select username from users
+            where username = '{username}'
+            """)
+            result = self.db_cursor.fetchone()
+            if not result:
+                self.errorPasswordLabel.setText("К сожалению, учетной записи с таким именем не существует.")
+                return
+
+            if not self.login_attempt['username']:
+                self.login_attempt['username'] = username
+
+            self.db_cursor.execute(f"""
             select username, password, is_confirm, is_superuser, block, extra_password from users
             where username = '{username}' and password = '{password}'
             """)
             result = self.db_cursor.fetchone()
-            self.db_conn.commit()
             if result:
-                is_confirm = result[2]
+                self.login_attempt = {
+                    'username': None,
+                    'count': 0
+                }
                 is_superuser = result[3]
                 block = result[4]
                 extra_password = result[5]
@@ -95,7 +113,13 @@ class Entry(QtWidgets.QMainWindow, entry.Ui_MainWindow, CreateDB):
                     self.twoWindow = AdminMode()
                     self.twoWindow.show()
             else:
-                self.errorPasswordLabel.setText("Неверный логин или пароль")
+                self.login_attempt['count'] += 1
+                count = self.login_attempt['count']
+                if count < 3:
+                    self.errorPasswordLabel.setText(f"Неверный пароль. Осталось {3 - count} попыток")
+                else:
+                    self.errorPasswordLabel.setText("Завершнение работы.")
+                    self.close()
 
     def set_new_password(self, password):
         if not self.extra_password:
