@@ -90,7 +90,7 @@ class Entry(QtWidgets.QMainWindow, entry.Ui_MainWindow, CreateDB):
             else:
                 is_confirm = result[1]
                 if not is_confirm:
-                    self.errorPasswordLabel.setText("Необходимо подвердить запись. Выполните вход без пароля.")
+                    self.errorPasswordLabel.setText("Необходимо подтвердить запись. Выполните вход без пароля.")
                     return
 
             if not self.login_attempt['username']:
