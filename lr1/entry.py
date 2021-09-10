@@ -57,6 +57,9 @@ class Ui_MainWindow(object):
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
+        self.action = QtWidgets.QAction(MainWindow)
+        self.action.setObjectName("action")
+        self.menu.addAction(self.action)
         self.menubar.addAction(self.menu.menuAction())
 
         self.retranslateUi(MainWindow)
@@ -68,7 +71,8 @@ class Ui_MainWindow(object):
         self.okButton.setText(_translate("MainWindow", "Ok"))
         self.label.setText(_translate("MainWindow", "Имя пользователя"))
         self.label_2.setText(_translate("MainWindow", "Пароль"))
-        self.menu.setTitle(_translate("MainWindow", "Мицук Максим"))
+        self.menu.setTitle(_translate("MainWindow", "Помощь"))
+        self.action.setText(_translate("MainWindow", "Справка"))
 
 
 if __name__ == "__main__":
