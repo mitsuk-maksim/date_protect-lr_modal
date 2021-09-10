@@ -8,6 +8,7 @@ from PyQt5.QtCore import pyqtSignal
 import entry
 import change_password
 import admin_mode
+import info
 
 
 class CreateDB:
@@ -44,6 +45,11 @@ class Entry(QtWidgets.QMainWindow, entry.Ui_MainWindow, CreateDB):
             'count': 0
         }
         self.extra_password = False
+        self.action.triggered.connect(self.info)
+
+    def info(self):
+        self.twoWindow = Info()
+        self.twoWindow.show()
 
     def check(self):
         username = self.nameEdit.text()
@@ -69,7 +75,7 @@ class Entry(QtWidgets.QMainWindow, entry.Ui_MainWindow, CreateDB):
                     else:
                         self.errorPasswordLabel.setText("Вы заблокированы!")
                 else:
-                    self.errorPasswordLabel.setText('Запись уже подтверждена')
+                    self.errorPasswordLabel.setText('Запись уже подтверждена, введите пароль.')
             else:
                 self.errorPasswordLabel.setText("К сожалению, вы не администратор")
         else:
@@ -236,6 +242,12 @@ class AdminMode(QtWidgets.QMainWindow, admin_mode.Ui_MainWindow, CreateDB):
             self.errorPasswordLabel.setText('Пароли не совпадают')
 
 
+class Info(QtWidgets.QMainWindow, info.Ui_MainWindow):
+    def __init__(self):
+        super().__init__()
+        self.setupUi(self)
+
+
 def main():
     cdb = CreateDB()
     app = QtWidgets.QApplication(sys.argv)
@@ -246,50 +258,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-#
-# import entry
-# import dialog
-#
-# import sys
-#
-# app = entry.QtWidgets.QApplication(sys.argv)
-# mainWindow = entry.QtWidgets.QMainWindow()
-# ui = entry.Ui_mainWindow()
-# ui.setupUi(mainWindow)
-# mainWindow.show()
-#
-# def on_click():
-#     entry.close()
-#
-# #
-# ui.okButton.clicked.connect(on_click)
-#
-# sys.exit(app.exec_())
-#
-#
-#
-#
-# # from PyQt5 import uic
-# # from PyQt5.QtWidgets import QApplication
-# #
-# #
-# # Form, Window = uic.loadUiType("entry.ui")
-# # app = QApplication([])
-# # window = Window()
-# # form = Form()
-# # form.setupUi(window)
-# # window.show()
-# #
-# # def on_click():
-# #     Form, Window = uic.loadUiType("dialog.ui")
-# #     app = QApplication([])
-# #     window = Window()
-# #     form = Form()
-# #     form.setupUi(window)
-# #     window.show()
-# #     # app.exec_()
-# #
-# #
-# # form.okButton.clicked.connect(on_click)
-# # app.exec_()
