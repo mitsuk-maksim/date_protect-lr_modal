@@ -95,6 +95,10 @@ class Entry(QtWidgets.QMainWindow, entry.Ui_MainWindow, CreateDB):
 
             if not self.login_attempt['username']:
                 self.login_attempt['username'] = username
+            else:
+                if self.login_attempt['username'] != username:
+                    self.login_attempt['username'] = username
+                    self.login_attempt['count'] = 0
 
             self.db_cursor.execute(f"""
             select username, password, is_confirm, is_superuser, block, extra_password from users
