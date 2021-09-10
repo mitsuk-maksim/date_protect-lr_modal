@@ -46,7 +46,7 @@ class Entry(QtWidgets.QMainWindow, entry.Ui_MainWindow, CreateDB):
         if not password:
             self.db_cursor.execute(f"""
             select username, password, is_confirm, block, extra_password from users
-            where username like '{username}'
+            where username = '{username}'
             """)
             result = self.db_cursor.fetchone()
             self.db_conn.commit()
@@ -71,7 +71,7 @@ class Entry(QtWidgets.QMainWindow, entry.Ui_MainWindow, CreateDB):
         else:
             self.db_cursor.execute(f"""
             select username, password, is_confirm, is_superuser, block, extra_password from users
-            where username like '{username}' and password like '{password}'
+            where username = '{username}' and password = '{password}'
             """)
             result = self.db_cursor.fetchone()
             self.db_conn.commit()
