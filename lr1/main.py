@@ -9,6 +9,7 @@ import entry
 import change_password
 import admin_mode
 
+
 class CreateDB:
     db_conn = sqlite3.connect("date_protect.db")
     db_cursor = db_conn.cursor()
