@@ -54,7 +54,6 @@ class Entry(QtWidgets.QMainWindow, entry.Ui_MainWindow, CreateDB):
             where username = '{username}'
             """)
             result = self.db_cursor.fetchone()
-            self.db_conn.commit()
             if result:
                 is_confirm = result[2]
                 block = result[3]
@@ -75,13 +74,18 @@ class Entry(QtWidgets.QMainWindow, entry.Ui_MainWindow, CreateDB):
                 self.errorPasswordLabel.setText("К сожалению, вы не администратор")
         else:
             self.db_cursor.execute(f"""
-            select username from users
+            select username, is_confirm from users
             where username = '{username}'
             """)
             result = self.db_cursor.fetchone()
             if not result:
                 self.errorPasswordLabel.setText("К сожалению, учетной записи с таким именем не существует.")
                 return
+            else:
+                is_confirm = result[1]
+                if not is_confirm:
+                    self.errorPasswordLabel.setText("Необходимо подвердить запись. Выполните вход без пароля.")
+                    return
 
             if not self.login_attempt['username']:
                 self.login_attempt['username'] = username
@@ -128,7 +132,6 @@ class Entry(QtWidgets.QMainWindow, entry.Ui_MainWindow, CreateDB):
             """)
             self.db_conn.commit()
             self.errorPasswordLabel.setText('Пароль изменен')
-            # self.close()
         else:
             print(password)
             if re.match(".*[A-Z].*", password) and re.match(".*[a-z].*", password) and re.match(".*[~!.......].*",
@@ -170,7 +173,6 @@ class AdminMode(QtWidgets.QMainWindow, admin_mode.Ui_MainWindow, CreateDB):
                     where is_superuser = 0
                     """)
         result = self.db_cursor.fetchall()
-        self.db_conn.commit()
         for res in result:
             self.listWidget.addItem(res[0])
         self.listWidget.itemActivated.connect(self.item_activated_event)
@@ -188,7 +190,6 @@ class AdminMode(QtWidgets.QMainWindow, admin_mode.Ui_MainWindow, CreateDB):
         """)
         self.username = item.text()
         result = self.db_cursor.fetchone()
-        self.db_conn.commit()
         block = result[0]
         extra_password = result[1]
         self.blockCheckBox.setChecked(True if block else False)
