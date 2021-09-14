@@ -144,7 +144,7 @@ class Entry(QtWidgets.QMainWindow, entry.Ui_MainWindow, CreateDB):
             self.errorPasswordLabel.setText('Пароль изменен')
         else:
             print(password)
-            if re.match(".*[A-Z].*", password) and re.match(".*[a-z].*", password) and re.match(".*[~!.......].*",
+            if re.match(".*[A-Z].*", password) and re.match(".*[a-z].*", password) and re.match(".*[+*/-].*",
                                                                                                 password):
                 self.db_cursor.execute(f"""
                             update users set password = '{password}', is_confirm = 1 where username = '{self.username}'
